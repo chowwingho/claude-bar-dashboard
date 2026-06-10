@@ -23,6 +23,7 @@ const NAV_ITEMS = [
   { href: "/timeline", label: "Timeline" },
   { href: "/patterns", label: "Patterns" },
   { href: "/correlation", label: "Correlation" },
+  { href: "/work", label: "Work" },
 ];
 
 export default function RootLayout({
