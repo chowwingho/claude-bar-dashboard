@@ -8,6 +8,7 @@ import {
   type UsageSnapshot,
   type DailySummary,
 } from "@/lib/queries";
+import { todayET } from "@/lib/dates";
 import { QuotaBars } from "@/components/QuotaBars";
 import { Heatmap } from "@/components/Heatmap";
 import { StatsCard } from "@/components/StatsCard";
@@ -67,8 +68,8 @@ export default function Home() {
     );
   }
 
-  // Today's summary
-  const today = new Date().toISOString().slice(0, 10);
+  // Today's summary (use Eastern time to match sync.py's day boundaries)
+  const today = todayET();
   const todaySummary = dailies.find((d) => d.day === today);
 
   return (

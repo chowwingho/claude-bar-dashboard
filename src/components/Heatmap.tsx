@@ -1,6 +1,7 @@
 "use client";
 
 import type { DailySummary } from "@/lib/queries";
+import { formatDateET } from "@/lib/dates";
 
 interface Props {
   dailies: DailySummary[];
@@ -30,7 +31,7 @@ export function Heatmap({ dailies }: Props) {
   for (let i = 29; i >= 0; i--) {
     const d = new Date();
     d.setDate(d.getDate() - i);
-    const key = d.toISOString().slice(0, 10);
+    const key = formatDateET(d); // Eastern time to match sync.py day boundaries
     const summary = dayMap.get(key);
     days.push({
       date: key,

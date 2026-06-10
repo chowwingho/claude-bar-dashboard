@@ -1,4 +1,5 @@
 import { supabase } from "./supabase";
+import { daysAgoET } from "./dates";
 
 export interface UsageSnapshot {
   id: number;
@@ -62,12 +63,11 @@ export async function getLatestSnapshot(): Promise<UsageSnapshot | null> {
 export async function getDailySummaries(
   days: number = 30
 ): Promise<DailySummary[]> {
-  const since = new Date();
-  since.setDate(since.getDate() - days);
+  const sinceDate = daysAgoET(days); // Eastern time to match sync.py day boundaries
   const { data } = await supabase
     .from("public_daily_summaries")
     .select("*")
-    .gte("day", since.toISOString().slice(0, 10))
+    .gte("day", sinceDate)
     .order("day", { ascending: true });
   return data || [];
 }
