@@ -7,14 +7,14 @@ interface Props {
   dailies: DailySummary[];
 }
 
-// Log-scale color bands based on observed usage range
+// Log-scale purple ramp — single-hue from dark plum to bright violet
 function heatColor(tokens: number): string {
-  if (tokens === 0) return "#1a1a1a";       // no activity
-  if (tokens < 100_000) return "#14532d";    // minimal
-  if (tokens < 1_000_000) return "#166534";  // light
-  if (tokens < 10_000_000) return "#16a34a"; // moderate
-  if (tokens < 50_000_000) return "#f97316"; // heavy
-  return "#ef4444";                           // extreme
+  if (tokens === 0) return "#1a1a1a";        // no activity
+  if (tokens < 100_000) return "#2e1065";    // minimal — deep plum
+  if (tokens < 1_000_000) return "#4c1d95";  // light — dark purple
+  if (tokens < 10_000_000) return "#7c3aed"; // moderate — vivid purple
+  if (tokens < 50_000_000) return "#a855f7"; // heavy — bright violet
+  return "#c084fc";                           // extreme — light violet
 }
 
 function formatTokens(n: number): string {
@@ -77,7 +77,7 @@ export function Heatmap({ dailies }: Props) {
       {/* Legend */}
       <div className="mt-3 flex items-center gap-2 text-xs text-[#737373]">
         <span>Less</span>
-        {["#1a1a1a", "#14532d", "#166534", "#16a34a", "#f97316", "#ef4444"].map(
+        {["#1a1a1a", "#2e1065", "#4c1d95", "#7c3aed", "#a855f7", "#c084fc"].map(
           (c) => (
             <div
               key={c}
