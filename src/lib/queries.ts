@@ -107,3 +107,50 @@ export async function getLastSyncTime(): Promise<string | null> {
     .single();
   return data?.finished_at || null;
 }
+
+/**
+ * Get all tool usage across daily summaries, aggregated.
+ */
+export function aggregateToolMix(
+  dailies: DailySummary[]
+): { name: string; count: number }[] {
+  const totals: Record<string, number> = {};
+  for (const d of dailies) {
+    if (!d.tool_mix) continue;
+    for (const [tool, count] of Object.entries(d.tool_mix)) {
+      totals[tool] = (totals[tool] || 0) + count;
+    }
+  }
+  return Object.entries(totals)
+    .map(([name, count]) => ({ name, count }))
+    .sort((a, b) => b.count - a.count);
+}
+
+/**
+ * Compute cache efficiency per day from token buckets.
+ */
+export function computeCacheEfficiency(
+  buckets: TokenBucket[]
+): { day: string; cachePct: number; tokens: number }[] {
+  const byDay: Record<
+    string,
+    { cacheRead: number; input: number; cacheWrite: number }
+  > = {};
+  for (const b of buckets) {
+    const day = b.bucket_hour.slice(0, 10);
+    if (!byDay[day]) byDay[day] = { cacheRead: 0, input: 0, cacheWrite: 0 };
+    byDay[day].cacheRead += b.cache_read_tokens;
+    byDay[day].input += b.input_tokens;
+    byDay[day].cacheWrite += b.cache_write_tokens;
+  }
+  return Object.entries(byDay)
+    .map(([day, v]) => {
+      const inputSide = v.input + v.cacheRead + v.cacheWrite;
+      return {
+        day,
+        cachePct: inputSide > 0 ? (v.cacheRead / inputSide) * 100 : 0,
+        tokens: v.input + v.cacheRead + v.cacheWrite,
+      };
+    })
+    .sort((a, b) => a.day.localeCompare(b.day));
+}
