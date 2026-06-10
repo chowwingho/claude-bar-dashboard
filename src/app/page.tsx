@@ -13,6 +13,8 @@ import { QuotaBars } from "@/components/QuotaBars";
 import { Heatmap } from "@/components/Heatmap";
 import { StatsCard } from "@/components/StatsCard";
 import { WindowTimeline } from "@/components/WindowTimeline";
+import { TopDays } from "@/components/TopDays";
+import { TrendLine } from "@/components/TrendLine";
 
 export default function Home() {
   const [snapshot, setSnapshot] = useState<UsageSnapshot | null>(null);
@@ -119,12 +121,31 @@ export default function Home() {
         />
       </div>
 
-      {/* 30-day heatmap */}
+      {/* Activity heatmap */}
       <div className="rounded-lg border border-[#262626] bg-[#141414] p-5">
         <h2 className="mb-4 text-sm font-medium text-[#737373]">
-          Daily volume — last 30 days
+          Activity
         </h2>
         <Heatmap dailies={dailies} />
+      </div>
+
+      {/* Trend line + top days side by side */}
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+        {/* 30-day trend with 7-day moving average */}
+        <div className="rounded-lg border border-[#262626] bg-[#141414] p-5">
+          <h2 className="mb-4 text-sm font-medium text-[#737373]">
+            Daily volume + 7-day moving average
+          </h2>
+          <TrendLine dailies={dailies} />
+        </div>
+
+        {/* Top days */}
+        <div className="rounded-lg border border-[#262626] bg-[#141414] p-5">
+          <h2 className="mb-4 text-sm font-medium text-[#737373]">
+            Top days
+          </h2>
+          <TopDays dailies={dailies} limit={5} />
+        </div>
       </div>
 
       {/* 24h window timeline */}
